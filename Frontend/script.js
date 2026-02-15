@@ -451,9 +451,6 @@ async function checkout() {
                 // REAL: Call backend API
                 const response = await fetch(`${BASE_URL}/sale`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify({
                         item: itemName,
                         quantity: itemData.qty,
