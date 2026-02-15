@@ -250,7 +250,7 @@ int main() {
     CROW_ROUTE(app, "/sale")
     ([](const crow::request& req){
         // Handle OPTIONS preflight requests
-        if (req.method_string() == "OPTIONS") {
+        if (req.method == crow::HTTPMethod::Options) {
             std::string origin = req.get_header_value("Origin");
             crow::response res;
             res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
@@ -299,7 +299,7 @@ int main() {
             dailyTotal += saleAmount;
             
             // Record sale
-            SalesRecord record;
+            SaleRecord record;
             record.timestamp = getCurrentTimestamp();
             record.table = body.value("table", "N/A");
             record.items[itemName] = qty;
