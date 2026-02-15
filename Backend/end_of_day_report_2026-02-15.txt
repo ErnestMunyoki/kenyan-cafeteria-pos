@@ -1,0 +1,77 @@
+CAFETERIA POS - END OF DAY REPORT
+=====================================
+
+Date: 2026-02-15
+Generated: 2026-02-15 15:03:31
+
+SALES SUMMARY
+-------------
+Total Revenue: Ksh 0.00
+Total Transactions: 8
+Average Transaction: Ksh 0.00
+
+INVENTORY STATUS
+----------------
+Beans Stew: 80 units
+Chapati: 198 units
+Chicken Stew: 40 units
+Dawa: 60 units
+Fresh Passion Juice: 80 units
+Githeri: 60 units
+Kachumbari: 100 units
+Mahamri: 150 units
+Mandazi: 180 units
+Maziwa Lala: 100 units
+Mukimo: 50 units
+Nyama Choma: 30 units
+Pilau Rice: 70 units
+Samosa: 120 units
+Sukuma Wiki: 80 units
+Tangawizi Tea: 140 units
+Tilapia Fish: 25 units
+Ugali: 143 units
+Uji (Porridge): 120 units
+Viazi Karai: 90 units
+
+DETAILED SALES
+--------------
+
+Time: 2026-02-15 01:34:52
+Table: N/A
+Total: Ksh 80.00
+Items: Ugali x1 
+
+Time: 2026-02-15 01:56:39
+Table: N/A
+Total: Ksh 80.00
+Items: Ugali x1 
+
+Time: 2026-02-15 02:01:50
+Table: N/A
+Total: Ksh 80.00
+Items: Ugali x1 
+
+Time: 2026-02-15 02:06:18
+Table: N/A
+Total: Ksh 60.00
+Items: Chapati x2 
+
+Time: 2026-02-15 02:08:30
+Table: N/A
+Total: Ksh 80.00
+Items: Ugali x1 
+
+Time: 2026-02-15 14:27:04
+Table: N/A
+Total: Ksh 80.00
+Items: Ugali x1 
+
+Time: 2026-02-15 14:33:41
+Table: N/A
+Total: Ksh 80.00
+Items: Ugali x1 
+
+Time: 2026-02-15 14:43:21
+Table: N/A
+Total: Ksh 80.00
+Items: Ugali x1 

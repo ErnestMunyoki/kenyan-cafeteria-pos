@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cafeteria POS System - Professional Management</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation Header -->
+  <header>
+    <nav class="navbar">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <h1>🍽️ Cafeteria POS</h1>
+        </div>
+        <ul class="nav-menu">
+          <li><a href="#menu-section" class="nav-link">Menu</a></li>
+          <li><a href="#cart-section" class="nav-link">Cart</a></li>
+          <li><a href="#reports-section" class="nav-link">Reports</a></li>
+          <li><a href="#staff-section" class="nav-link">Staff</a></li>
+          <li><a href="#kiosk-section" class="nav-link">Kiosk</a></li>
+        </ul>
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Dashboard Stats -->
+    <section class="dashboard-stats">
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <h3>Today's Revenue</h3>
+          <p id="daily-revenue">Ksh 0</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-info">
+          <h3>Low Stock Items</h3>
+          <p id="low-stock-count">0</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🛒</div>
+        <div class="stat-info">
+          <h3>Cart Items</h3>
+          <p id="cart-count">0</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏰</div>
+        <div class="stat-info">
+          <h3>Current Time</h3>
+          <p id="current-time">--:--</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu-section" class="content-section">
+      <div class="section-header">
+        <h2>🍽️ Menu Management</h2>
+        <div class="menu-controls">
+          <input type="text" id="search-menu" placeholder="🔍 Search menu items..." class="search-input">
+          <select id="category-filter" class="filter-select">
+            <option value="">All Categories</option>
+            <option value="main">Main Dishes</option>
+            <option value="beverage">Beverages</option>
+            <option value="snack">Snacks</option>
+            <option value="side">Side Dishes</option>
+          </select>
+        </div>
+      </div>
+      <div id="menu" class="menu-grid"></div>
+    </section>
+
+    <!-- Cart Section -->
+    <section id="cart-section" class="content-section">
+      <div class="section-header">
+        <h2>🛒 Shopping Cart</h2>
+        <button id="clear-cart" class="btn-secondary">Clear Cart</button>
+      </div>
+      <div class="cart-container">
+        <div id="cart-list" class="cart-items"></div>
+        <div class="cart-summary">
+          <div class="cart-totals">
+            <div class="total-row">
+              <span>Subtotal:</span>
+              <span id="subtotal">Ksh 0</span>
+            </div>
+            <div class="total-row">
+              <span>Tax (16%):</span>
+              <span id="tax">Ksh 0</span>
+            </div>
+            <div class="total-row final-total">
+              <span>Total:</span>
+              <span id="cart-total">Ksh 0</span>
+            </div>
+          </div>
+          <div class="cart-actions">
+            <input type="text" id="table-number" placeholder="Table number (optional)" class="table-input">
+            <button onclick="checkout()" class="btn-primary">💳 Checkout</button>
+            <button onclick="printReceipt()" class="btn-secondary">🧾 Print Receipt</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reports Section -->
+    <section id="reports-section" class="content-section">
+      <div class="section-header">
+        <h2>📊 Reports & Analytics</h2>
+      </div>
+      <div class="reports-grid">
+        <div class="report-card">
+          <h3>Daily Summary</h3>
+          <button id="dailyTotalsBtn" class="btn-primary">📈 View Daily Totals</button>
+        </div>
+        <div class="report-card">
+          <h3>End of Day</h3>
+          <button id="exportBtn" class="btn-secondary">📄 Export Report</button>
+        </div>
+        <div class="report-card">
+          <h3>Stock Status</h3>
+          <button id="stockReportBtn" class="btn-secondary">📦 Stock Report</button>
+        </div>
+        <div class="report-card">
+          <h3>Sales History</h3>
+          <button id="salesHistoryBtn" class="btn-secondary">📋 View History</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Staff Schedule Section -->
+    <section id="staff-section" class="content-section">
+      <div class="section-header">
+        <h2>👥 Staff Schedule</h2>
+        <button class="btn-primary">+ Add Staff</button>
+      </div>
+      <div class="staff-grid">
+        <div class="staff-card">
+          <div class="staff-avatar">👨‍💼</div>
+          <div class="staff-info">
+            <h4>Cyrille Villaflores</h4>
+            <p class="staff-role">Manager</p>
+            <p class="staff-shift">🕐 6am – 12pm</p>
+          </div>
+          <div class="staff-status online">Online</div>
+        </div>
+        <div class="staff-card">
+          <div class="staff-avatar">👩‍💼</div>
+          <div class="staff-info">
+            <h4>Félix Séguin</h4>
+            <p class="staff-role">Cashier</p>
+            <p class="staff-shift">🕐 6am – 11am</p>
+          </div>
+          <div class="staff-status online">Online</div>
+        </div>
+        <div class="staff-card">
+          <div class="staff-avatar">👨‍🍳</div>
+          <div class="staff-info">
+            <h4>Joshua Berry</h4>
+            <p class="staff-role">Server</p>
+            <p class="staff-shift">🕐 7:30am – 3pm</p>
+          </div>
+          <div class="staff-status offline">Offline</div>
+        </div>
+        <div class="staff-card">
+          <div class="staff-avatar">👩‍💼</div>
+          <div class="staff-info">
+            <h4>Esdras López</h4>
+            <p class="staff-role">Cashier</p>
+            <p class="staff-shift">🕐 10:30am – 3pm</p>
+          </div>
+          <div class="staff-status offline">Offline</div>
+        </div>
+        <div class="staff-card">
+          <div class="staff-avatar">👩‍🍳</div>
+          <div class="staff-info">
+            <h4>Adriana Cantero</h4>
+            <p class="staff-role">Server</p>
+            <p class="staff-shift">🕐 7:30am – 3pm</p>
+          </div>
+          <div class="staff-status online">Online</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Self-Service Kiosk Section -->
+    <section id="kiosk-section" class="content-section">
+      <div class="section-header">
+        <h2>🖥️ Self-Service Kiosk</h2>
+        <div class="kiosk-controls">
+          <input type="text" id="table-number" placeholder="🪑 Enter table number" class="table-input">
+          <button class="btn-primary">Start Order</button>
+        </div>
+      </div>
+      <div class="kiosk-categories">
+        <button class="category-btn active">All</button>
+        <button class="category-btn">Main Dishes</button>
+        <button class="category-btn">Snacks</button>
+        <button class="category-btn">Beverages</button>
+      </div>
+      <div id="kiosk-menu" class="menu-grid kiosk-grid"></div>
+    </section>
+
+    <!-- Loyalty Program Section -->
+    <section id="loyalty-section" class="content-section loyalty-section">
+      <div class="loyalty-content">
+        <div class="loyalty-info">
+          <h2>⭐ Join Our Loyalty Program</h2>
+          <p>Earn points with every order and enjoy exclusive benefits!</p>
+          <ul class="loyalty-benefits">
+            <li>🎁 Free meal after 10 orders</li>
+            <li>☕ 20% off on beverages</li>
+            <li>🎂 Birthday special offers</li>
+            <li>⚡ Priority service</li>
+          </ul>
+        </div>
+        <div class="loyalty-form">
+          <input type="email" placeholder="✉️ Enter your email" class="email-input">
+          <input type="tel" placeholder="📱 Phone number (optional)" class="phone-input">
+          <button onclick="joinLoyalty()" class="btn-primary">Join Now</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>🍽️ Cafeteria POS</h4>
+        <p>Professional point-of-sale and inventory management for modern cafeterias.</p>
+        <div class="social-links">
+          <a href="#">📘</a>
+          <a href="#">🐦</a>
+          <a href="#">📷</a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h4>Features</h4>
+        <ul>
+          <li>Point of Sale System</li>
+          <li>Inventory Management</li>
+          <li>Staff Scheduling</li>
+          <li>Self-Service Kiosk</li>
+          <li>Reports & Analytics</li>
+          <li>Loyalty Programs</li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Solutions</h4>
+        <ul>
+          <li>School Cafeterias</li>
+          <li>Hospital Dining</li>
+          <li>Corporate Cafeterias</li>
+          <li>Food Courts</li>
+          <li>Restaurant Chains</li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Contact & Support</h4>
+        <p>📧 support@cafepos.co.ke</p>
+        <p>📞 +254 700 123456</p>
+        <p>🏢 Nairobi, Kenya</p>
+        <p>⏰ Mon-Fri: 8AM-6PM</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Cafeteria POS System. All rights reserved. | Privacy Policy | Terms of Service</p>
+    </div>
+  </footer>
+
+  <!-- Receipt Modal -->
+  <div id="receipt-modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Receipt Preview</h3>
+      <div id="receipt-body"></div>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Script -->
+  <script src="script.js"></script>
+</body>
+</html>

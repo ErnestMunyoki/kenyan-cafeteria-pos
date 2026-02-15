@@ -1,0 +1,122 @@
+{
+    "Beans Stew": {
+        "category": "main",
+        "price": 100.0,
+        "stock": 80,
+        "threshold": 15
+    },
+    "Chapati": {
+        "category": "main",
+        "price": 30.0,
+        "stock": 198,
+        "threshold": 25
+    },
+    "Chicken Stew": {
+        "category": "main",
+        "price": 280.0,
+        "stock": 40,
+        "threshold": 8
+    },
+    "Dawa": {
+        "category": "beverage",
+        "price": 180.0,
+        "stock": 60,
+        "threshold": 10
+    },
+    "Fresh Passion Juice": {
+        "category": "beverage",
+        "price": 120.0,
+        "stock": 80,
+        "threshold": 15
+    },
+    "Githeri": {
+        "category": "main",
+        "price": 150.0,
+        "stock": 60,
+        "threshold": 10
+    },
+    "Kachumbari": {
+        "category": "side",
+        "price": 80.0,
+        "stock": 100,
+        "threshold": 15
+    },
+    "Mahamri": {
+        "category": "snack",
+        "price": 35.0,
+        "stock": 150,
+        "threshold": 20
+    },
+    "Mandazi": {
+        "category": "snack",
+        "price": 25.0,
+        "stock": 180,
+        "threshold": 20
+    },
+    "Maziwa Lala": {
+        "category": "beverage",
+        "price": 80.0,
+        "stock": 100,
+        "threshold": 15
+    },
+    "Mukimo": {
+        "category": "main",
+        "price": 180.0,
+        "stock": 50,
+        "threshold": 8
+    },
+    "Nyama Choma": {
+        "category": "main",
+        "price": 450.0,
+        "stock": 30,
+        "threshold": 5
+    },
+    "Pilau Rice": {
+        "category": "main",
+        "price": 200.0,
+        "stock": 70,
+        "threshold": 12
+    },
+    "Samosa": {
+        "category": "snack",
+        "price": 40.0,
+        "stock": 120,
+        "threshold": 15
+    },
+    "Sukuma Wiki": {
+        "category": "main",
+        "price": 120.0,
+        "stock": 80,
+        "threshold": 15
+    },
+    "Tangawizi Tea": {
+        "category": "beverage",
+        "price": 60.0,
+        "stock": 140,
+        "threshold": 20
+    },
+    "Tilapia Fish": {
+        "category": "main",
+        "price": 380.0,
+        "stock": 25,
+        "threshold": 5
+    },
+    "Ugali": {
+        "category": "main",
+        "price": 80.0,
+        "stock": 143,
+        "threshold": 20
+    },
+    "Uji (Porridge)": {
+        "category": "beverage",
+        "price": 50.0,
+        "stock": 120,
+        "threshold": 20
+    },
+    "Viazi Karai": {
+        "category": "snack",
+        "price": 60.0,
+        "stock": 90,
+        "threshold": 12
+    }
+}

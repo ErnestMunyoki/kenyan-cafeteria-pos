@@ -1,0 +1,25 @@
+CAFETERIA POS - END OF DAY REPORT
+=====================================
+
+Date: 2026-02-13
+Generated: 2026-02-13 13:48:54
+
+SALES SUMMARY
+-------------
+Total Revenue: Ksh 0.00
+Total Transactions: 0
+Average Transaction: Ksh 0.00
+
+INVENTORY STATUS
+----------------
+Beans Stew: 60 units
+Chapati: 200 units
+Chicken Curry: 40 units
+Coffee: 150 units
+Fruit Salad: 50 units
+Juice: 100 units
+Rice Plate: 80 units
+Water Bottle: 300 units
+
+DETAILED SALES
+--------------
