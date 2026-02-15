@@ -1,23 +1,28 @@
 FROM ubuntu:22.04
 
-# Install runtime dependencies only
+# Install build and runtime dependencies
 RUN apt-get update && apt-get install -y \
-    libboost-system1.74.0 \
-    libboost-thread1.74.0 \
+    g++ \
+    make \
+    libboost-all-dev \
+    nlohmann-json3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy pre-compiled binary and data files
-COPY backend .
+# Copy source files
+COPY backend.cpp .
+COPY crow_all.h .
 COPY inventory.json .
 COPY sales_history.json .
 COPY end_of_day_report_*.txt .
 
+# Compile backend in container
+RUN g++ -std=c++17 -O2 -pthread backend.cpp -o backend
+
 # Expose port
 EXPOSE 18080
 
-# Make binary executable and run it
-RUN chmod +x backend
+# Run the backend
 CMD ["./backend"]
