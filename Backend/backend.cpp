@@ -185,23 +185,21 @@ void checkAndResetDailyTotal() {
 crow::response corsResponse(const std::string& body = "", int code = 200) {
     crow::response res{code, body};
     res.add_header("Access-Control-Allow-Origin", "*");
-    res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
+    res.add_header("Access-Control-Allow-Methods", "*");
+    res.add_header("Access-Control-Allow-Headers", "*");
     res.add_header("Access-Control-Max-Age", "86400");
     res.add_header("Access-Control-Allow-Credentials", "false");
-    res.add_header("Vary", "Origin");
     res.add_header("Content-Type", "application/json");
     return res;
 }
 
 // Global CORS middleware function
 void addCorsHeaders(crow::response& res, const std::string& origin = "") {
-    res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
-    res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.add_header("Access-Control-Allow-Methods", "*");
+    res.add_header("Access-Control-Allow-Headers", "*");
     res.add_header("Access-Control-Max-Age", "86400");
     res.add_header("Access-Control-Allow-Credentials", "false");
-    res.add_header("Vary", "Origin");
 }
 
 crow::response corsResponseJson(const json& data, int code = 200) {
