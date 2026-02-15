@@ -1,5 +1,5 @@
 // Base URL for backend
-const BASE_URL = "http://127.0.0.1:18080";
+const BASE_URL = "https://your-backend-url.onrender.com"; // Replace with your actual Render URL
 
 let cart = {};
 let menuItems = {};
