@@ -281,10 +281,12 @@ int main() {
     ([](const crow::request& req){
         // Handle OPTIONS preflight requests
         if (req.method == crow::HTTPMethod::Options) {
-            std::string origin = req.get_header_value("Origin");
             crow::response res;
-            addCorsHeaders(res, origin);
             res.code = 204;
+            res.add_header("Access-Control-Allow-Origin", "*");
+            res.add_header("Access-Control-Allow-Methods", "*");
+            res.add_header("Access-Control-Allow-Headers", "*");
+            res.add_header("Access-Control-Max-Age", "86400");
             return res;
         }
         
