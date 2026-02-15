@@ -253,20 +253,6 @@ int main() {
         return res;
     });
 
-    CROW_ROUTE(app, "/sale").methods("OPTIONS"_method)
-    ([](const crow::request& req){ 
-        std::string origin = req.get_header_value("Origin");
-        crow::response res;
-        res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
-        res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
-        res.add_header("Access-Control-Max-Age", "86400");
-        res.add_header("Access-Control-Allow-Credentials", "false");
-        res.add_header("Vary", "Origin");
-        res.code = 204;
-        return res;
-    });
-
     CROW_ROUTE(app, "/dailyTotals").methods("OPTIONS"_method)
     ([](const crow::request& req){ 
         std::string origin = req.get_header_value("Origin");
@@ -356,9 +342,24 @@ int main() {
         return corsResponseJson(response);
     });
 
-    // POST sale with enhanced validation and tracking
-    CROW_ROUTE(app, "/sale").methods("POST"_method)
+    // POST/OPTIONS sale with enhanced validation and tracking
+    CROW_ROUTE(app, "/sale").methods("POST"_method, "OPTIONS"_method)
     ([](const crow::request& req){
+        // Handle OPTIONS preflight requests
+        if (req.method == "OPTIONS") {
+            std::string origin = req.get_header_value("Origin");
+            crow::response res;
+            res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
+            res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
+            res.add_header("Access-Control-Max-Age", "86400");
+            res.add_header("Access-Control-Allow-Credentials", "false");
+            res.add_header("Vary", "Origin");
+            res.code = 204;
+            return res;
+        }
+        
+        // Handle POST requests
         try {
             checkAndResetDailyTotal();
             
