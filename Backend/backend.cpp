@@ -346,7 +346,7 @@ int main() {
     CROW_ROUTE(app, "/sale").methods("POST"_method, "OPTIONS"_method)
     ([](const crow::request& req){
         // Handle OPTIONS preflight requests
-        if (req.method == "OPTIONS") {
+        if (req.method == crow::HTTPMethod::Options) {
             std::string origin = req.get_header_value("Origin");
             crow::response res;
             res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
