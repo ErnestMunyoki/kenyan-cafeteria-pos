@@ -1,5 +1,5 @@
 // Base URL for backend
-const BASE_URL = "https://your-backend-url.onrender.com"; // Replace with your actual Render URL
+const BASE_URL = "https://kenyan-cafeteria-pos.onrender.com";
 
 let cart = {};
 let menuItems = {};
@@ -421,7 +421,7 @@ function updateCartTotals() {
 }
 
 // =======================
-// Checkout - Mock Mode for Testing
+// Checkout - Real Backend Mode
 // =======================
 async function checkout() {
     try {
@@ -448,17 +448,25 @@ async function checkout() {
             console.log(`Processing: ${itemName}, Qty: ${itemData.qty}, Price: ${itemData.price}`);
             
             try {
-                // MOCK: Simulate successful sale without backend call
-                const mockSaleData = {
-                    amount: itemData.qty * itemData.price,
-                    item: itemName,
-                    message: "Sale processed successfully",
-                    quantity: itemData.qty,
-                    remaining: (menuItems[itemName]?.stock || 100) - itemData.qty,
-                    status: "success"
-                };
-                
-                console.log(`Mock sale data for ${itemName}:`, mockSaleData);
+                // REAL: Call backend API
+                const response = await fetch(`${BASE_URL}/sale`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        item: itemName,
+                        quantity: itemData.qty,
+                        price: itemData.price
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const saleData = await response.json();
+                console.log(`Sale data for ${itemName}:`, saleData);
 
                 // Calculate item total
                 const itemTotal = itemData.qty * itemData.price;
@@ -468,21 +476,18 @@ async function checkout() {
                 receipt += `${itemName} x${itemData.qty} = Ksh ${itemTotal.toFixed(2)}<br>`;
 
                 // Update stock display
-                if (mockSaleData.remaining !== undefined && menuItems[itemName]) {
+                if (saleData.remaining !== undefined && menuItems[itemName]) {
                     const stockEl = document.getElementById(`stock-${itemName}`);
                     if (stockEl) {
-                        stockEl.textContent = `Stock: ${mockSaleData.remaining}`;
-                        if (mockSaleData.remaining <= menuItems[itemName].threshold) {
+                        stockEl.textContent = `Stock: ${saleData.remaining}`;
+                        if (saleData.remaining <= menuItems[itemName].threshold) {
                             stockEl.classList.add('low-stock');
                         } else {
                             stockEl.classList.remove('low-stock');
                         }
                     }
-                    menuItems[itemName].stock = mockSaleData.remaining;
+                    menuItems[itemName].stock = saleData.remaining;
                 }
-
-                // Small delay to simulate processing
-                await new Promise(resolve => setTimeout(resolve, 100));
 
             } catch (itemError) {
                 console.error(`Error processing ${itemName}:`, itemError);
@@ -530,13 +535,13 @@ async function checkout() {
         updateDashboard();
 
         // Show success message
-        showToast('Order completed successfully! 🎉 (Mock Mode)', 'success');
+        showToast('Order completed successfully! 🎉', 'success');
 
         // Reset button
         checkoutBtn.innerHTML = originalText;
         checkoutBtn.disabled = false;
 
-        console.log('Checkout completed successfully (Mock Mode)');
+        console.log('Checkout completed successfully (Real Backend Mode)');
 
     } catch (error) {
         console.error('Checkout failed:', error);
