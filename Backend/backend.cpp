@@ -246,57 +246,24 @@ int main() {
         return corsResponseJson(debug);
     });
 
-    // OPTIONS handler for /sale
-    CROW_ROUTE(app, "/sale").methods("OPTIONS"_method)
-    ([](const crow::request& req){ 
-        std::string origin = req.get_header_value("Origin");
-        crow::response res;
-        res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
-        res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
-        res.add_header("Access-Control-Max-Age", "86400");
-        res.add_header("Access-Control-Allow-Credentials", "false");
-        res.add_header("Vary", "Origin");
-        res.code = 204;
-        return res;
-    });
-
-    // GET items with enhanced information
-    CROW_ROUTE(app, "/items")
-    ([](){
-        checkAndResetDailyTotal();
-        
-        json data;
-        json categories = json::array();
-        std::set<std::string> categorySet;
-        
-        for (auto& [name, item] : inventory) {
-            data[name] = json::object({
-                {"price", item.price},
-                {"stock", item.stock},
-                {"threshold", item.reorderThreshold},
-                {"category", item.category},
-                {"available", item.stock > 0}
-            });
-            categorySet.insert(item.category);
-        }
-        
-        for (const auto& cat : categorySet) {
-            categories.push_back(cat);
-        }
-        
-        json response = {
-            {"items", data},
-            {"categories", categories},
-            {"totalItems", inventory.size()}
-        };
-        
-        return corsResponseJson(response);
-    });
-
-    // POST sale with enhanced validation and tracking
-    CROW_ROUTE(app, "/sale").methods("POST"_method)
+    // POST sale with enhanced validation and tracking - also handles OPTIONS
+    CROW_ROUTE(app, "/sale")
     ([](const crow::request& req){
+        // Handle OPTIONS preflight requests
+        if (req.method_string() == "OPTIONS") {
+            std::string origin = req.get_header_value("Origin");
+            crow::response res;
+            res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
+            res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
+            res.add_header("Access-Control-Max-Age", "86400");
+            res.add_header("Access-Control-Allow-Credentials", "false");
+            res.add_header("Vary", "Origin");
+            res.code = 204;
+            return res;
+        }
+        
+        // Handle POST requests
         try {
             checkAndResetDailyTotal();
             
@@ -332,7 +299,7 @@ int main() {
             dailyTotal += saleAmount;
             
             // Record sale
-            SaleRecord record;
+            SalesRecord record;
             record.timestamp = getCurrentTimestamp();
             record.table = body.value("table", "N/A");
             record.items[itemName] = qty;
