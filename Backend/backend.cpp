@@ -276,21 +276,21 @@ int main() {
         return corsResponseJson(response);
     });
 
-    // POST sale with enhanced validation and tracking - also handles OPTIONS
-    CROW_ROUTE(app, "/sale")
+    // OPTIONS handler for /sale - MUST come before POST
+    CROW_ROUTE(app, "/sale").methods("OPTIONS"_method)
     ([](const crow::request& req){
-        // Handle OPTIONS preflight requests
-        if (req.method == crow::HTTPMethod::Options) {
-            crow::response res;
-            res.code = 204;
-            res.add_header("Access-Control-Allow-Origin", "*");
-            res.add_header("Access-Control-Allow-Methods", "*");
-            res.add_header("Access-Control-Allow-Headers", "*");
-            res.add_header("Access-Control-Max-Age", "86400");
-            return res;
-        }
-        
-        // Handle POST requests
+        crow::response res;
+        res.code = 204;
+        res.add_header("Access-Control-Allow-Origin", "*");
+        res.add_header("Access-Control-Allow-Methods", "*");
+        res.add_header("Access-Control-Allow-Headers", "*");
+        res.add_header("Access-Control-Max-Age", "86400");
+        return res;
+    });
+
+    // POST sale with enhanced validation and tracking
+    CROW_ROUTE(app, "/sale").methods("POST"_method)
+    ([](const crow::request& req){
         try {
             checkAndResetDailyTotal();
             
