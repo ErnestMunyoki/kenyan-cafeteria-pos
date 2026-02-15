@@ -223,7 +223,7 @@ int main() {
         res.add_header("Access-Control-Allow-Credentials", "false");
         res.add_header("Vary", "Origin");
         res.code = 204;
-        return res;
+        return std::move(res);
     });
 
     // OPTIONS handlers for preflight requests
@@ -232,11 +232,12 @@ int main() {
         res.add_header("Access-Control-Allow-Origin", "*");
         res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
+        res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
         res.add_header("Access-Control-Max-Age", "86400");
         res.add_header("Access-Control-Allow-Credentials", "false");
         res.add_header("Vary", "Origin");
         res.code = 204;
-        return res;
+        return std::move(res);
     });
 
     CROW_ROUTE(app, "/sale").methods("OPTIONS"_method)
@@ -248,7 +249,7 @@ int main() {
         res.add_header("Access-Control-Allow-Credentials", "false");
         res.add_header("Vary", "Origin");
         res.code = 204;
-        return res;
+        return std::move(res);
     });
 
     CROW_ROUTE(app, "/dailyTotals").methods("OPTIONS"_method)
@@ -260,12 +261,11 @@ int main() {
         res.add_header("Access-Control-Allow-Credentials", "false");
         res.add_header("Vary", "Origin");
         res.code = 204;
-        return res;
+        return std::move(res);
     });
 
     CROW_ROUTE(app, "/exportReport").methods("OPTIONS"_method)
-    ([](const crow::request&){ 
-        crow::response res;
+    ([](const crow::request& req, crow::response& res){ 
         res.add_header("Access-Control-Allow-Origin", "*");
         res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin");
