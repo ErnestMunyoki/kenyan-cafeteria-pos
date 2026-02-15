@@ -191,7 +191,20 @@ crow::response corsResponse(const std::string& body = "", int code = 200) {
     res.add_header("Access-Control-Allow-Credentials", "false");
     res.add_header("Vary", "Origin");
     res.add_header("Content-Type", "application/json");
-    return std::move(res);
+    return res;
+}
+
+// Enhanced CORS response for specific origins
+crow::response corsResponseForOrigin(const std::string& origin, const std::string& body = "", int code = 200) {
+    crow::response res{code, body};
+    res.add_header("Access-Control-Allow-Origin", origin);
+    res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
+    res.add_header("Access-Control-Max-Age", "86400");
+    res.add_header("Access-Control-Allow-Credentials", "false");
+    res.add_header("Vary", "Origin");
+    res.add_header("Content-Type", "application/json");
+    return res;
 }
 
 crow::response corsResponseJson(const json& data, int code = 200) {
@@ -215,8 +228,9 @@ int main() {
     // OPTIONS handlers for preflight requests
     CROW_ROUTE(app, "/items").methods("OPTIONS"_method)
     ([](const crow::request& req){ 
+        std::string origin = req.get_header_value("Origin");
         crow::response res;
-        res.add_header("Access-Control-Allow-Origin", "*");
+        res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
         res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
         res.add_header("Access-Control-Max-Age", "86400");
@@ -228,21 +242,9 @@ int main() {
 
     CROW_ROUTE(app, "/sale").methods("OPTIONS"_method)
     ([](const crow::request& req){ 
+        std::string origin = req.get_header_value("Origin");
         crow::response res;
-        res.add_header("Access-Control-Allow-Origin", "*");
-        res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
-        res.add_header("Access-Control-Max-Age", "86400");
-        res.add_header("Access-Control-Allow-Credentials", "false");
-        res.add_header("Vary", "Origin");
-        res.code = 204;
-        return res;
-    });
-
-    CROW_ROUTE(app, "/sale").methods("OPTIONS"_method)
-    ([](const crow::request& req){ 
-        crow::response res;
-        res.add_header("Access-Control-Allow-Origin", "*");
+        res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
         res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
         res.add_header("Access-Control-Max-Age", "86400");
@@ -370,8 +372,8 @@ int main() {
             }
             
             // Process sale
-            inventory[itemName].stock -= qty;
             double saleAmount = inventory[itemName].price * qty;
+            inventory[itemName].stock -= qty;
             dailyTotal += saleAmount;
             
             // Record sale
@@ -406,7 +408,9 @@ int main() {
                 res["alertLevel"] = "error";
             }
             
-            return corsResponseJson(res);
+            // Use specific origin for CORS
+            std::string origin = req.get_header_value("Origin");
+            return corsResponseForOrigin(origin.empty() ? "*" : origin, res.dump());
             
         } catch (const json::exception& e) {
             return errorResponse("Invalid JSON format: " + std::string(e.what()));
