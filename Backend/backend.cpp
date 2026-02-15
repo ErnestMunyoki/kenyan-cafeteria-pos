@@ -191,7 +191,7 @@ crow::response corsResponse(const std::string& body = "", int code = 200) {
     res.add_header("Access-Control-Allow-Credentials", "false");
     res.add_header("Vary", "Origin");
     res.add_header("Content-Type", "application/json");
-    return res;
+    return std::move(res);
 }
 
 crow::response corsResponseJson(const json& data, int code = 200) {
@@ -232,7 +232,6 @@ int main() {
         res.add_header("Access-Control-Allow-Origin", "*");
         res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
-        res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
         res.add_header("Access-Control-Max-Age", "86400");
         res.add_header("Access-Control-Allow-Credentials", "false");
         res.add_header("Vary", "Origin");
@@ -272,7 +271,7 @@ int main() {
         res.add_header("Access-Control-Max-Age", "86400");
         res.add_header("Vary", "Origin");
         res.code = 204;
-        return res;
+        return std::move(res);
     });
 
     CROW_ROUTE(app, "/salesHistory").methods("OPTIONS"_method)
@@ -284,7 +283,7 @@ int main() {
         res.add_header("Access-Control-Max-Age", "86400");
         res.add_header("Vary", "Origin");
         res.code = 204;
-        return res;
+        return std::move(res);
     });
 
     CROW_ROUTE(app, "/stockReport").methods("OPTIONS"_method)
@@ -296,7 +295,7 @@ int main() {
         res.add_header("Access-Control-Max-Age", "86400");
         res.add_header("Vary", "Origin");
         res.code = 204;
-        return res;
+        return std::move(res);
     });
 
     // GET items with enhanced information
