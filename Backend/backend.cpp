@@ -269,8 +269,9 @@ int main() {
 
     CROW_ROUTE(app, "/dailyTotals").methods("OPTIONS"_method)
     ([](const crow::request& req){ 
+        std::string origin = req.get_header_value("Origin");
         crow::response res;
-        res.add_header("Access-Control-Allow-Origin", "*");
+        res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
         res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
         res.add_header("Access-Control-Max-Age", "86400");
@@ -282,8 +283,9 @@ int main() {
 
     CROW_ROUTE(app, "/exportReport").methods("OPTIONS"_method)
     ([](const crow::request& req){ 
+        std::string origin = req.get_header_value("Origin");
         crow::response res;
-        res.add_header("Access-Control-Allow-Origin", "*");
+        res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
         res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
         res.add_header("Access-Control-Max-Age", "86400");
@@ -295,8 +297,9 @@ int main() {
 
     CROW_ROUTE(app, "/salesHistory").methods("OPTIONS"_method)
     ([](const crow::request& req){ 
+        std::string origin = req.get_header_value("Origin");
         crow::response res;
-        res.add_header("Access-Control-Allow-Origin", "*");
+        res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
         res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
         res.add_header("Access-Control-Max-Age", "86400");
@@ -308,8 +311,9 @@ int main() {
 
     CROW_ROUTE(app, "/stockReport").methods("OPTIONS"_method)
     ([](const crow::request& req){ 
+        std::string origin = req.get_header_value("Origin");
         crow::response res;
-        res.add_header("Access-Control-Allow-Origin", "*");
+        res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
         res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
         res.add_header("Access-Control-Max-Age", "86400");
