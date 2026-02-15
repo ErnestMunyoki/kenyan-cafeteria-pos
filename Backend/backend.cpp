@@ -228,9 +228,6 @@ crow::response errorResponse(const std::string& message, int code = 400) {
 int main() {
     crow::SimpleApp app;
     
-    // Apply global CORS middleware
-    app.add_middleware<CorsMiddleware>();
-    
     // Initialize data
     loadInventory();
     loadSalesHistory();
@@ -247,6 +244,21 @@ int main() {
             {"version", "1.0"}
         };
         return corsResponseJson(debug);
+    });
+
+    // OPTIONS handler for /sale
+    CROW_ROUTE(app, "/sale").methods("OPTIONS"_method)
+    ([](const crow::request& req){ 
+        std::string origin = req.get_header_value("Origin");
+        crow::response res;
+        res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
+        res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
+        res.add_header("Access-Control-Max-Age", "86400");
+        res.add_header("Access-Control-Allow-Credentials", "false");
+        res.add_header("Vary", "Origin");
+        res.code = 204;
+        return res;
     });
 
     // GET items with enhanced information
