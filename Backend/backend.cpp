@@ -225,6 +225,19 @@ int main() {
     loadSalesHistory();
     currentDateString = getCurrentDate();
 
+    // Debug endpoint to test deployment
+    CROW_ROUTE(app, "/debug")
+    ([](const crow::request& req){
+        json debug = {
+            {"message", "Backend is deployed and working!"},
+            {"timestamp", getCurrentTimestamp()},
+            {"origin", req.get_header_value("Origin")},
+            {"method", req.method},
+            {"version", "1.0"}
+        };
+        return corsResponseJson(debug);
+    });
+
     // OPTIONS handlers for preflight requests
     CROW_ROUTE(app, "/items").methods("OPTIONS"_method)
     ([](const crow::request& req){ 
@@ -297,6 +310,22 @@ int main() {
     ([](const crow::request& req){ 
         crow::response res;
         res.add_header("Access-Control-Allow-Origin", "*");
+        res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
+        res.add_header("Access-Control-Max-Age", "86400");
+        res.add_header("Access-Control-Allow-Credentials", "false");
+        res.add_header("Vary", "Origin");
+        res.code = 204;
+        return res;
+    });
+
+    // Simple catch-all OPTIONS for any other routes
+    CROW_ROUTE(app, "/<string>")
+    .methods("OPTIONS"_method)
+    ([](const crow::request& req){
+        std::string origin = req.get_header_value("Origin");
+        crow::response res;
+        res.add_header("Access-Control-Allow-Origin", origin.empty() ? "*" : origin);
         res.add_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         res.add_header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin, Accept");
         res.add_header("Access-Control-Max-Age", "86400");
