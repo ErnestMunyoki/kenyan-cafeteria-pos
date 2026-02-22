@@ -31,7 +31,6 @@ std::vector<SaleRecord> salesHistory;
 double dailyTotal = 0.0;
 std::string currentDateString;
 
-// Helper functions
 std::string getCurrentDate();
 std::string getCurrentTimestamp();
 void loadInventory();
@@ -59,7 +58,6 @@ std::string getCurrentTimestamp() {
 void loadInventory() {
     std::ifstream f("inventory.json");
     if (!f.is_open()) {
-        // Create default inventory if file doesn't exist
         inventory = {
             {"Rice Plate", {"Rice Plate", 150.0, 80, 10, "main"}},
             {"Chapati", {"Chapati", 30.0, 200, 20, "main"}},
@@ -152,7 +150,6 @@ void saveSalesHistory() {
 void checkAndResetDailyTotal() {
     std::string today = getCurrentDate();
     if (currentDateString != today) {
-        // Save yesterday's report
         if (!currentDateString.empty()) {
             std::ofstream report("daily_reports_" + currentDateString + ".txt");
             report << "Daily Report for " << currentDateString << "\n";
@@ -175,13 +172,11 @@ void checkAndResetDailyTotal() {
             report.close();
         }
         
-        // Reset for new day
         currentDateString = today;
         dailyTotal = 0.0;
     }
 }
 
-// Helper to add CORS headers
 crow::response corsResponse(const std::string& body = "", int code = 200) {
     crow::response res{code, body};
     res.add_header("Access-Control-Allow-Origin", "*");
@@ -193,7 +188,6 @@ crow::response corsResponse(const std::string& body = "", int code = 200) {
     return res;
 }
 
-// Global CORS middleware function
 void addCorsHeaders(crow::response& res, const std::string& origin = "") {
     res.add_header("Access-Control-Allow-Origin", "*");
     res.add_header("Access-Control-Allow-Methods", "*");
@@ -206,7 +200,6 @@ crow::response corsResponseJson(const json& data, int code = 200) {
     return corsResponse(data.dump(), code);
 }
 
-// Error handling helper
 crow::response errorResponse(const std::string& message, int code = 400) {
     json error = {{"error", message}, {"status", "error"}};
     return corsResponseJson(error, code);
@@ -215,12 +208,10 @@ crow::response errorResponse(const std::string& message, int code = 400) {
 int main() {
     crow::SimpleApp app;
     
-    // Initialize data
     loadInventory();
     loadSalesHistory();
     currentDateString = getCurrentDate();
 
-    // Debug endpoint to test deployment
     CROW_ROUTE(app, "/debug")
     ([](const crow::request& req){
         json debug = {
@@ -233,7 +224,6 @@ int main() {
         return corsResponseJson(debug);
     });
 
-    // OPTIONS handler for /items
     CROW_ROUTE(app, "/items").methods("OPTIONS"_method)
     ([](const crow::request& req){ 
         std::string origin = req.get_header_value("Origin");
@@ -243,7 +233,6 @@ int main() {
         return res;
     });
 
-    // GET items with enhanced information
     CROW_ROUTE(app, "/items")
     ([](){
         checkAndResetDailyTotal();
@@ -276,7 +265,6 @@ int main() {
         return corsResponseJson(response);
     });
 
-    // OPTIONS handler for /sale - MUST come before POST
     CROW_ROUTE(app, "/sale").methods("OPTIONS"_method)
     ([](const crow::request& req){
         crow::response res;
@@ -288,7 +276,6 @@ int main() {
         return res;
     });
 
-    // POST sale with enhanced validation and tracking
     CROW_ROUTE(app, "/sale").methods("POST"_method)
     ([](const crow::request& req){
         try {
@@ -320,12 +307,10 @@ int main() {
                                    std::to_string(inventory[itemName].stock));
             }
             
-            // Process sale
             double saleAmount = inventory[itemName].price * qty;
             inventory[itemName].stock -= qty;
             dailyTotal += saleAmount;
             
-            // Record sale
             SaleRecord record;
             record.timestamp = getCurrentTimestamp();
             record.table = body.value("table", "N/A");
@@ -346,7 +331,6 @@ int main() {
                 {"timestamp", record.timestamp}
             };
             
-            // Check for low stock alert
             if (inventory[itemName].stock <= inventory[itemName].reorderThreshold) {
                 res["alert"] = "⚠️ Low stock alert: " + itemName + " needs reordering!";
                 res["alertLevel"] = "warning";
@@ -366,7 +350,6 @@ int main() {
         }
     });
 
-    // GET daily totals with enhanced statistics
     CROW_ROUTE(app, "/dailyTotals")
     ([](){
         checkAndResetDailyTotal();
@@ -386,7 +369,6 @@ int main() {
             }
         }
         
-        // Find most popular item
         std::string mostPopular = "None";
         int maxQty = 0;
         for (auto& [name, qty] : popularItems) {
@@ -409,7 +391,6 @@ int main() {
         return corsResponseJson(res);
     });
 
-    // GET sales history
     CROW_ROUTE(app, "/salesHistory")
     ([](){
         json response = {
@@ -435,7 +416,6 @@ int main() {
         return corsResponseJson(response);
     });
 
-    // GET stock report
     CROW_ROUTE(app, "/stockReport")
     ([](){
         json report = {
@@ -468,7 +448,6 @@ int main() {
         return corsResponseJson(report);
     });
 
-    // GET export report
     CROW_ROUTE(app, "/exportReport")
     ([](){
         try {
@@ -539,7 +518,6 @@ int main() {
         }
     });
 
-    // Health check endpoint
     CROW_ROUTE(app, "/health")
     ([](){
         json status = {

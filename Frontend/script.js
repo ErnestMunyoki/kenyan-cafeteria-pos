@@ -1,13 +1,10 @@
-// Base URL for backend
 const BASE_URL = "https://kenyan-cafeteria-pos.onrender.com";
 
 let cart = {};
 let menuItems = {};
 let salesHistory = [];
 
-// =======================
-// Initialize App
-// =======================
+
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
 });
@@ -20,11 +17,8 @@ function initializeApp() {
     setInterval(updateTime, 1000);
 }
 
-// =======================
-// Navigation and Mobile Menu
-// =======================
+
 function setupEventListeners() {
-    // Mobile menu toggle
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
     
@@ -33,7 +27,6 @@ function setupEventListeners() {
         navMenu.classList.toggle('active');
     });
 
-    // Close mobile menu when clicking on a link
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => {
             hamburger.classList.remove('active');
@@ -41,29 +34,24 @@ function setupEventListeners() {
         });
     });
 
-    // Search functionality
     const searchInput = document.getElementById('search-menu');
     searchInput?.addEventListener('input', (e) => {
         filterMenuItems(e.target.value);
     });
 
-    // Category filter
     const categoryFilter = document.getElementById('category-filter');
     categoryFilter?.addEventListener('change', (e) => {
         filterByCategory(e.target.value);
     });
 
-    // Clear cart button
     const clearCartBtn = document.getElementById('clear-cart');
     clearCartBtn?.addEventListener('click', clearCart);
 
-    // Report buttons
     document.getElementById('dailyTotalsBtn')?.addEventListener('click', getDailyTotals);
     document.getElementById('exportBtn')?.addEventListener('click', exportReport);
     document.getElementById('stockReportBtn')?.addEventListener('click', getStockReport);
     document.getElementById('salesHistoryBtn')?.addEventListener('click', showSalesHistory);
 
-    // Kiosk category buttons
     document.querySelectorAll('.category-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
@@ -73,9 +61,7 @@ function setupEventListeners() {
     });
 }
 
-// =======================
-// Toast notifications
-// =======================
+
 function showToast(message, type = 'success') {
     const toast = document.createElement("div");
     toast.className = `toast ${type}`;
@@ -87,9 +73,7 @@ function showToast(message, type = 'success') {
     setTimeout(() => toast.remove(), 3000);
 }
 
-// =======================
-// Dashboard Updates
-// =======================
+
 function updateDashboard() {
     updateDailyRevenue();
     updateLowStockCount();
@@ -135,16 +119,14 @@ function updateTime() {
     }
 }
 
-// =======================
-// Load menu items
-// =======================
+
 async function loadMenu() {
     try {
         let res = await fetch(`${BASE_URL}/items`);
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         
         let response = await res.json();
-        let items = response.items; // Extract items from response
+        let items = response.items; 
         menuItems = items;
 
         renderMenu('menu', items);
@@ -174,22 +156,18 @@ function createMenuItemElement(name, item, isKiosk = false) {
     let div = document.createElement("div");
     div.className = "item";
     
-    // Store category data for filtering
     div.dataset.category = item.category;
     
-    // Add low stock class if needed
     if (item.stock <= item.threshold) {
         div.classList.add('low-stock');
     }
 
     let img = document.createElement("img");
-    // Convert item name to filename format with special mappings
     const filename = name.toLowerCase()
         .replace(/\s+/g, "_")
         .replace(/[()]/g, "")
         .replace(/_/g, "_");
     
-    // Special filename mappings for items with different names
     const nameMap = {
         'beans_stew': 'beans_stew',
         'chicken_stew': 'chicken_stew',
@@ -221,13 +199,10 @@ function createMenuItemElement(name, item, isKiosk = false) {
     
     const mappedName = nameMap[filename] || filename;
     
-    // Try to load JPG first, then SVG, then fallback
     img.src = `images/${mappedName}.jpg`;
     img.onerror = function() {
-        // Try SVG if JPG fails
         this.src = `images/${mappedName}.svg`;
         this.onerror = function() {
-            // Fallback to placeholder
             this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjhGOEY4Ii8+CjxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjI4MCIgaGVpZ2h0PSIxODAiIHJ4PSIxMCIgZmlsbD0iI0UwRTBFMEIvPgo8dGV4dCB4PSIxNTAiIHk9IjEwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE2IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzMzMzMzMyI+J3tuYW1lfTwvdGV4dD4KPHRleHQgeD0iMTUwIiB5PSIxMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzY2NjY2NiI+S2VueWFuIEN1aXNpbmU8L3RleHQ+Cjwvc3ZnPgo=';
         };
     };
@@ -257,9 +232,7 @@ function createMenuItemElement(name, item, isKiosk = false) {
     return div;
 }
 
-// =======================
-// Search and Filter Functions
-// =======================
+
 function filterMenuItems(searchTerm) {
     const items = document.querySelectorAll('#menu .item');
     const term = searchTerm.toLowerCase();
@@ -312,9 +285,7 @@ function filterKioskMenu(category) {
     });
 }
 
-// =======================
-// Cart logic
-// =======================
+
 function addToCart(name, price) {
     if (menuItems[name] && menuItems[name].stock <= 0) {
         showToast(`${name} is out of stock!`, 'error');
@@ -408,7 +379,7 @@ function updateCartTotals() {
         subtotal += cart[name].qty * cart[name].price;
     }
     
-    const tax = subtotal * 0.16; // 16% tax
+    const tax = subtotal * 0.16; 
     const total = subtotal + tax;
     
     const subtotalEl = document.getElementById('subtotal');
@@ -420,18 +391,14 @@ function updateCartTotals() {
     if (totalEl) totalEl.textContent = `Ksh ${total.toFixed(2)}`;
 }
 
-// =======================
-// Checkout - Real Backend Mode
-// =======================
+
 async function checkout() {
     try {
-        // Validate cart
         if (!cart || Object.keys(cart).length === 0) {
             showToast('Your cart is empty! Add some items first.', 'error');
             return;
         }
 
-        // Show loading state
         const checkoutBtn = document.querySelector('button[onclick="checkout()"]');
         const originalText = checkoutBtn.innerHTML;
         checkoutBtn.innerHTML = '⏳ Processing...';
@@ -443,12 +410,10 @@ async function checkout() {
         
         console.log('Starting checkout for items:', Object.keys(cart));
 
-        // Process each item sequentially
         for (const [itemName, itemData] of Object.entries(cart)) {
             console.log(`Processing: ${itemName}, Qty: ${itemData.qty}, Price: ${itemData.price}`);
             
             try {
-                // REAL: Call backend API
                 const response = await fetch(`${BASE_URL}/sale`, {
                     method: 'POST',
                     headers: {
@@ -468,14 +433,11 @@ async function checkout() {
                 const saleData = await response.json();
                 console.log(`Sale data for ${itemName}:`, saleData);
 
-                // Calculate item total
                 const itemTotal = itemData.qty * itemData.price;
                 totalAmount += itemTotal;
                 
-                // Add to receipt
                 receipt += `${itemName} x${itemData.qty} = Ksh ${itemTotal.toFixed(2)}<br>`;
 
-                // Update stock display
                 if (saleData.remaining !== undefined && menuItems[itemName]) {
                     const stockEl = document.getElementById(`stock-${itemName}`);
                     if (stockEl) {
@@ -496,11 +458,9 @@ async function checkout() {
             }
         }
 
-        // Calculate totals
         const tax = totalAmount * 0.16;
         const finalTotal = totalAmount + tax;
 
-        // Complete receipt
         receipt += `<hr style="margin: 10px 0;">`;
         receipt += `<div style="text-align: right;">`;
         receipt += `<strong>Subtotal: Ksh ${totalAmount.toFixed(2)}</strong><br>`;
@@ -511,7 +471,6 @@ async function checkout() {
         receipt += `<small>Table: ${tableNumber}</small><br>`;
         receipt += `<small>${new Date().toLocaleString()}</small>`;
 
-        // Add to sales history
         salesHistory.push({
             date: new Date().toISOString(),
             items: {...cart},
@@ -521,23 +480,19 @@ async function checkout() {
             tax: tax
         });
 
-        // Show receipt
         const receiptBody = document.getElementById("receipt-body");
         if (receiptBody) {
             receiptBody.innerHTML = receipt;
             document.getElementById("receipt-modal").classList.remove("hidden");
         }
 
-        // Clear cart and update UI
         cart = {};
         renderCart();
         updateCartCount();
         updateDashboard();
 
-        // Show success message
         showToast('Order completed successfully! 🎉', 'success');
 
-        // Reset button
         checkoutBtn.innerHTML = originalText;
         checkoutBtn.disabled = false;
 
@@ -547,7 +502,6 @@ async function checkout() {
         console.error('Checkout failed:', error);
         showToast(`Checkout failed: ${error.message}`, 'error');
         
-        // Reset button
         const checkoutBtn = document.querySelector('button[onclick="checkout()"]');
         if (checkoutBtn) {
             checkoutBtn.innerHTML = '💳 Checkout';
@@ -556,9 +510,6 @@ async function checkout() {
     }
 }
 
-// =======================
-// Modal
-// =======================
 function closeModal() {
     document.getElementById("receipt-modal").classList.add("hidden");
 }
@@ -592,9 +543,6 @@ function printReceipt() {
     showToast('Receipt sent to printer!', 'success');
 }
 
-// =======================
-// Reports
-// =======================
 async function getDailyTotals() {
     try {
         let res = await fetch(`${BASE_URL}/dailyTotals`);
@@ -617,7 +565,6 @@ async function exportReport() {
         let text = await res.text();
         showToast(text, 'success');
         
-        // Also trigger download
         const blob = new Blob([text], { type: 'text/plain' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -703,9 +650,7 @@ function showSalesHistory() {
     showToast(history, 'success');
 }
 
-// =======================
-// Loyalty Program
-// =======================
+
 function joinLoyalty() {
     const emailInput = document.querySelector("#loyalty-section .email-input");
     const phoneInput = document.querySelector("#loyalty-section .phone-input");
@@ -718,29 +663,23 @@ function joinLoyalty() {
         return;
     }
     
-    // Simulate loyalty program signup
     const loyaltyData = {
         email: email,
         phone: phone,
         joinDate: new Date().toISOString(),
-        points: 50 // Welcome bonus
+        points: 50 
     };
     
-    // Store in localStorage for demo purposes
     let loyaltyMembers = JSON.parse(localStorage.getItem('loyaltyMembers') || '[]');
     loyaltyMembers.push(loyaltyData);
     localStorage.setItem('loyaltyMembers', JSON.stringify(loyaltyMembers));
     
     showToast(`Welcome to our loyalty program, ${email}! 🎉 You've earned 50 bonus points!`, 'success');
     
-    // Clear form
     if (emailInput) emailInput.value = '';
     if (phoneInput) phoneInput.value = '';
 }
 
-// =======================
-// Smooth Scrolling
-// =======================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
